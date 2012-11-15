@@ -1,9 +1,12 @@
-from bottle import route, run, template, post, get , request , static_file
+from bottle import route, run, template, post, get , request , static_file, os
 @route("/")
 def welcome():
     return """
 	   <form action="/uploadpage" ">
 		<input type="submit" value="upload file" />
+            </form>
+	   <form action="/list" ">
+		<input type="submit" value="list uploaded file" />
             </form>
 	    """
 @route("/uploadpage")
@@ -23,13 +26,22 @@ def do_upload():
 	if name and data.file:
 		raw = data.file.read()
 		filename = data.filename
-		open(filename, 'wb').write(raw)
+		open('/home/jaideep/uploadfiles/%s' % filename, 'wb').write(raw)
 		return "Hello! You uploaded "+"<a href='/%s'>%s" % (filename,filename) +"</a> (%d bytes)." % len(raw)
 	return "You missed a field"
 
+@route("/list")
+def list_myfiles():
+    files=os.listdir("/home/jaideep/uploadfiles/")
+    my_list= []
+    for index, value in enumerate(files):
+           my_list.append("%d. <a href='/%s'>%s" % (index+1,value,value) +"</a>"+"<br>")
+    print my_list
+    return my_list
+
 @route("/<filename>")
 def static(filename):
-    return static_file(filename, root=".")
+    return static_file(filename, root="/home/jaideep/uploadfiles/")
 
 #@get('/favicon.ico')
 #def get_favicon():
