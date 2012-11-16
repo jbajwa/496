@@ -27,17 +27,18 @@ def do_upload():
 		raw = data.file.read()
 		filename = data.filename
 		open('/home/jaideep/uploadfiles/%s' % filename, 'wb').write(raw)
-		return "Hello! You uploaded "+"<a href='/%s'>%s" % (filename,filename) +"</a> (%d bytes)." % len(raw)
+		return "Hello! You uploaded <a href='/%s'>%s</a> (%d bytes)." % (filename,filename,len(raw))
 	return "You missed a field"
 
 @route("/list")
 def list_myfiles():
     files=os.listdir("/home/jaideep/uploadfiles/")
-    my_list= []
-    for index, value in enumerate(files):
-           my_list.append("%d. <a href='/%s'>%s" % (index+1,value,value) +"</a>"+"<br>")
-    print my_list
-    return my_list
+
+    out = ["<ol>"]
+    for value in files:
+           out.append("<li><a href='/%s'>%s</a></li>" % (value, value))
+    out.append("</ol>")
+    return "".join(out)
 
 @route("/<filename>")
 def static(filename):
