@@ -1,5 +1,5 @@
 from django.conf.urls import patterns, include, url
-
+from django.views.generic.simple import direct_to_template
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 admin.autodiscover()
@@ -7,8 +7,10 @@ admin.autodiscover()
 urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'design.views.index', name='home'),
-    url(r'^$', 'eventster.views.index'),
+    url(r'^$', direct_to_template, {'template' : 'index.html'}),
     url(r'^createconf/', 'eventster.views.create_conf'),
+    url(r'^login_page/', 'eventster.views.login'),
+    url(r'^list_conf/', 'eventster.views.list_conf'),
     # url(r'^design/', include('design.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
