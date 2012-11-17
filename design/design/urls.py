@@ -6,7 +6,9 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     # Examples:
-    # url(r'^$', 'design.views.home', name='home'),
+    # url(r'^$', 'design.views.index', name='home'),
+    url(r'^$', 'eventster.views.index'),
+    url(r'^createconf/', 'eventster.views.create_conf'),
     # url(r'^design/', include('design.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
