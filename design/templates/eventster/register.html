@@ -4,7 +4,8 @@
     <p class="error">Sorry, that's not a valid username or password</p>
   {% endif %}
 
-  <form action="" method="post">
+  <form action="/login_page/" method="post">
+     {% csrf_token %}
     <label for="username">User name:</label>
     <input type="text" name="username" value="" id="username">
     <label for="password">Password:</label>
@@ -13,5 +14,7 @@
     <input type="submit" value="login" />
     <input type="hidden" name="next" value="{{ next|escape }}" />
   </form>
+  <br>
+  <p>New to EventSter? Sign-up h<a href="/register">ere</a></p>
 
 {% endblock %}

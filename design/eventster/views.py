@@ -2,17 +2,16 @@ from django.http import HttpResponse
 from django.template import loader, Context
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import UserCreationForm
-from django.shortcuts import render_to_response
-from django import forms
+from django.shortcuts import render_to_response, render
+from django import forms , template
 from eventster.models import conference, rsvp
-#to create generic form to create object
-from django.views.generic.edit import CreateView
+from django.contrib.staticfiles.storage import staticfiles_storage
+from django.core import serializers
 
 def index(request):
-    t = loader.get_template('eventster/index.html')
-    return HttpResponse(t.render())
+    return render_to_response('eventster/index.html')
 
-def login(request):
+def LoginPage(request):
   if request.method == 'POST':
     username = request.POST['username']
     password = request.POST['password']
@@ -20,25 +19,41 @@ def login(request):
     if user is not None:
       if user.is_active:
         login(request, user)
-        #Redirect to a success page.
+        return render_to_response('eventster/success.html')
       else:
         pass
         #Return a 'disabled account' error message
     else:
-      pass
+      return HttpResponse('Invalid info')
       #Return an 'invalid login' error message.
   else:
     form = UserCreationForm()
-    return render_to_response("eventster/register.html", {'form': form,})
+    # use render instead of render_to_response
+    return render(request, "eventster/register.html", {'form': form,})
 
-def create_conf(request):
-    
-    return CreateView()
-
-def list_conf(request):
+def ListConf(request):
     confall = conference.objects.all() 
     t =loader.get_template('eventster/confall.html')
     c = Context({
         'confall': confall,
         })
-    return HttpResponse(t.render(c))
+    return JsonOrHTML(request,confall,t,c)
+    
+def ConfDetail(request, conf_id):
+    confdetail = conference.objects.get(id=conf_id) 
+    t =loader.get_template('eventster/confdetail.html')
+    c = Context({
+        'confdetail': confdetail,
+        })
+    # in [] as serializers need iterable as parameter
+    return JsonOrHTML(request,[confdetail],t,c)
+
+# Decide to output Json or HTML based on output variable from httprequest
+def JsonOrHTML(request, confall,t,c):
+    GET = request.GET
+    if('output' in GET and GET['output'] in ('json', 'xml')):
+      data = serializers.serialize(GET['output'], confall)
+      return HttpResponse(data, mimetype='application/' + GET['output'])
+    else:
+      return HttpResponse(t.render(c))
+

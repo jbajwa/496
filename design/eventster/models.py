@@ -13,8 +13,10 @@ class conference(models.Model):
 
 
 class rsvp(models.Model):
+    def __unicode__(self):
+      return "%s is attending conference : %s " % (self.user.username, self.rsvp.name)
     user = models.ForeignKey(User)
     rsvp = models.ForeignKey(conference)
-    remark= models.CharField(max_length = 100)
+    remark= models.CharField(max_length = 100, blank=True, null=True,)
 
 # Create your models here.

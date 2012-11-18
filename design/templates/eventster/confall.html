@@ -1,7 +1,7 @@
 {% if confall %}
   <ul>
   {% for conf in confall %}
-    <li><a href="/list_conf/{{ conf.id }}/">{{ conf.name }}</a></li>
+    <li><a href="/conf/{{ conf.id }}/">{{ conf.name }}</a></li>
   {% endfor %}
   </ul>
 {% else %}
