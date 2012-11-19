@@ -1,0 +1,9 @@
+{% if confall %}
+  <ul>
+  {% for conf in confall %}
+    <li><a href="/conf/{{ conf.id }}/">{{ conf.name }}</a></li>
+  {% endfor %}
+  </ul>
+{% else %}
+  <p>No conferences available.</p>
+{% endif %}

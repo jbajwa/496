@@ -1,9 +1,51 @@
-{% if confall %}
-  <ul>
-  {% for conf in confall %}
-    <li><a href="/conf/{{ conf.id }}/">{{ conf.name }}</a></li>
-  {% endfor %}
-  </ul>
-{% else %}
-  <p>No conferences available.</p>
-{% endif %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Conference Listing</title>
+<link rel="stylesheet" type="text/css" media="screen" href="/static/bootstrap/css/bootstrap.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="/static/bootstrap/css/syntax.css" />
+
+<style type="text/css">
+html, body {
+  background-color: #f5f5f5
+} 
+ {% include "eventster/top_pad.html" %}
+/* The white background content wrapper */
+.content {
+background-color: #fff;
+-webkit-border-radius: 6px 6px 6px 6px;
+-moz-border-radius: 6px 6px 6px 6px;
+border-radius: 6px 6px 6px 6px;
+-webkit-box-shadow: 0 1px 2px rgba(0,0,0,.15);
+-moz-box-shadow: 0 1px 2px rgba(0,0,0,.15);
+box-shadow: 0 1px 2px rgba(0,0,0,.15);
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <h2>&nbsp;&nbsp;&nbsp;&nbsp;Conference Listing</h2>
+  <div class="content" style="padding: 30px 30px 10px 30px">
+
+  <div style="float: left; padding-right: 30px">
+
+    {% if confall %}
+    <ul class="unstyled" style="margin-top: 20px">
+    {% for conf in confall %}
+    <li style="color: #404040">
+    <span style="padding: 5px 10px; background: #ccc; font-size: 12pt; font-weight: bold; color: #000">{{ conf.id }}</span>&nbsp;
+    <a class ="lead" href="/conf/{{ conf.id }}/">{{ conf.name }}</a>
+    <br /><br />
+    </li>
+    {% endfor %}
+    </ul>
+    {% else %}
+    <p>No conferences available.</p>
+    {% endif %}
+  </div>
+<div style="clear: both"></div>
+</div>
+</div>
+</body>
+</html>
+

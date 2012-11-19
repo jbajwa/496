@@ -1,6 +1,12 @@
+<html>
+  <body>
+    {% include "eventster/top_pad.html" %}
 <form action="/createconf/" method="post">
   {% csrf_token %}
   {{ form.as_p }}
   <input type="submit" value="Submit" />
   <p><b>make sure the date is in the format mm/dd/yy</b></p>
 </form>
+
+</body>
+</html>

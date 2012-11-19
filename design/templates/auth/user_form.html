@@ -1,5 +1,64 @@
-<form action="/register/" method="post">
+<!DOCTYPE html>
+<html lang="en-us" >
+<head>
+<title>Sign Up</title>
+</head>
+<script type="text/javascript" src="js/core.js"></script>
+<script type="text/javascript" src="js/admin/RelatedObjectLookups.js"></script>
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="js/jquery.init.js"></script>
+<script type="text/javascript" src="js/actions.js"></script>
+
+
+<body class="auth-user change-form">
+
+<!-- Content -->
+<div id="content" class="colM">
+  <h1>Add user</h1>
+  <div id="content-main">
+    <form action="/register/" method="post" ><div style='display:none'><input type='hidden' name='csrfmiddlewaretoken' value='o9lIVWhX2fTRBqjTRwKV69UjRUVCIX3A' /></div>
   {% csrf_token %}
-  {{ form.as_p }}
-  <input type="submit" value="Submit" />
-</form>
+    <p>First, enter a username and password. Then, you'll be able to edit more user options.</p>
+    <div>
+      <fieldset class="module aligned wide">
+      <div class="form-row field-username">
+        <div>
+
+
+        <label for="id_username" class="required">Username:</label>
+        {{ form.username }}
+        <p class="help">Required. 30 characters or fewer. Letters, digits and @/./+/-/_ only.</p>
+    </div>
+    </div>
+      <div class="form-row field-email">
+        <div>
+
+
+        <label for="id_email" class="required">Email:</label>
+        {{ form.email }}
+    </div>
+    </div>
+  <div class="form-row field-password1">
+  <div>
+    <label for={{form.set_password}} class="required">Password:</label>
+    <input type="password" name="password1" id={{form.set_password}} />
+    </div>
+    </div>
+      <div class="form-row field-password2">
+      <div>
+        <label for="id_password2" class="required">Password confirmation:</label>
+         {{form.password}}
+      <!--<input type="password" name="password2" id="id_password2" />-->
+      <p class="help">Enter the same password as above, for verification.</p>
+    </div>
+    </div>
+</fieldset>
+<input type="submit" value="Save"  />
+</div>
+</div>
+</form></div>
+<br class="clear" />
+</div>
+<!-- END Content -->
+</body>
+</html>
