@@ -12,6 +12,9 @@ from collections import Iterable
 def index(request):
     return render_to_response('eventster/index.html')
 
+def about(request):
+    return render_to_response('eventster/about.html')
+
 def LoginPage(request):
   if request.method == 'POST':
     username = request.POST['username']

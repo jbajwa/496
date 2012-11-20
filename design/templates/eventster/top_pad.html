@@ -12,6 +12,21 @@
 <link href="/static/bootstrap/css/docs.css" rel="stylesheet">
 <link href="/static/bootstrap/js/google-code-prettify/prettify.css" rel="stylesheet">
 
+  <script type="text/javascript">
+    var menu = document.querySelector('.nav');
+    var anchors = menu.getElementsByTagName('a');
+
+    for (var i = 0; i < anchors.length; i += 1) {
+      anchors[i].addEventListener('click', function() { clickHandler(anchors[i]) }, false);
+    }
+
+    function clickHandler(anchor) {
+      var hasClass = anchor.getAttribute('class');
+      if (hasClass !== 'active') {
+        anchor.setAttribute('class', 'active');
+      }
+    }
+  </script>
         <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
         <!--[if lt IE 9]>
         <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -32,7 +47,7 @@
       <div class="nav-collapse collapse" style="height: 0px;">
           <ul class="nav">
           <li class="active"><a href="/">Home</a></li>
-          <li><a href="#about">About</a></li>
+          <li><a href="/about">About</a></li>
           <li><a href="/createconf">Create Conference</a></li>
           <li><a href="/conf">List Conference</a></li>
           <li><a href="/login_page">Login</a></li>
@@ -42,7 +57,6 @@
       </div>
     </div>
   </div>
-
    <!-- Le javascript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
