@@ -31,9 +31,26 @@ def LoginPage(request):
       return HttpResponse('Invalid info')
       #Return an 'invalid login' error message.
   else:
-    form = UserCreationForm()
-    # use render instead of render_to_response
-    return render(request, "eventster/login.html", {'form': form,})
+    GET = request.GET
+    if('username' in GET and 'password' in GET ):
+      lst = []
+      user = GET['username']
+      paswd = GET['password']
+      user = authenticate(username = user , password = paswd)
+      if user is not None:
+        if user.is_active:
+          login(request, user)
+          #return HttpResponse('Success')
+          return HttpResponse('Success')
+        else:
+          pass
+          #Return a 'disabled account' error message
+      else:
+        return HttpResponse('Invalid info!')
+    else:
+      form = UserCreationForm()
+      # use render instead of render_to_response
+      return render(request, "eventster/login.html", {'form': form,})
 
 def ListConf(request):
     confall = conference.objects.all() 

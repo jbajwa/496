@@ -10,7 +10,7 @@
     <li>Genre is:<b> {{ confdetail.genre }}</b></li>
     <li>Location is:<b> {{ confdetail.location }}</b></li>
     <li>Time is:<b> {{ confdetail.time }}</b></li>
-    <li>Owner name is:<b> {{ confdetail.owner }}</b></li>
+    <li>Owner name is:<b> {{ confdetail.owner.username }}</b></li>
   </ul>
 {% else %}
   <p>Invalid Conf ID.</p>
