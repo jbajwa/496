@@ -1,7 +1,9 @@
 # Django settings for design project.
+import os
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
+SITE_ROOT = os.path.dirname(os.path.realpath(__file__))
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
@@ -12,7 +14,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': '/home/jaideep/496/database/db.sqlite3',                      # Or path to database file if using sqlite3.
+        'NAME': os.path.join(SITE_ROOT, '../../database') + '/db.sqlite3',                      # Or path to database file if using sqlite3.
         'USER': '',                      # Not used with sqlite3.
         'PASSWORD': '',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
@@ -64,7 +66,7 @@ STATIC_URL = '/static/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
-    "/home/jaideep/496/static/",
+     os.path.join(SITE_ROOT, '../../static/'),
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
@@ -104,7 +106,7 @@ ROOT_URLCONF = 'design.urls'
 WSGI_APPLICATION = 'design.wsgi.application'
 
 TEMPLATE_DIRS = (
-    "/home/jaideep/496/design/templates"
+     os.path.join(SITE_ROOT, '../templates'),
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
