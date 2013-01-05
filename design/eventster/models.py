@@ -10,6 +10,7 @@ class conference(models.Model):
     location = models.CharField(max_length = 30)
     time = models.DateTimeField('data published')
     owner = models.ForeignKey(User)
+    public = models.BooleanField()
 
 
 class rsvp(models.Model):
