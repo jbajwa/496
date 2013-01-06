@@ -6,7 +6,7 @@ class conference(models.Model):
         return self.name
     name = models.CharField(max_length = 10)
     Agenda = models.CharField(max_length = 300)
-    genre = models.CharField(max_length = 15, choices=( ('edu','educational'),('soc','social'),('ent','entertainment'),('bus','bussiness') ))
+    genre = models.CharField(max_length = 15, choices=( ('educational','educational'),('social','social'),('entertainment','entertainment'),('bussiness','bussiness') ))
     location = models.CharField(max_length = 30)
     time = models.DateTimeField('data published')
     owner = models.ForeignKey(User)
