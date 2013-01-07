@@ -73,6 +73,13 @@ def ConfDetail(request, conf_id):
 def OutputFormat(request, confall,t,c):
     GET = request.GET
     if('output' in GET and GET['output'] in ('json', 'xml')):
+      # adding filter to sort by genre and location
+      if('city' in GET and 'genre' in GET):
+      	confall = conference.objects.filter(genre__iexact=GET['genre'],location__iexact=GET['city'])
+      elif('city' in GET):	 	
+      	confall = conference.objects.filter(location__iexact=GET['city'])
+      elif('genre' in GET):	 	
+      	confall = conference.objects.filter(genre__iexact=GET['genre'])
       data = serializers.serialize(GET['output'], (confall if isinstance(confall, Iterable) else [confall]))
       return HttpResponse(data, mimetype='application/' + GET['output'])
     else:
