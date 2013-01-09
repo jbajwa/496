@@ -8,9 +8,9 @@ class conference(models.Model):
     Agenda = models.CharField(max_length = 300)
     genre = models.CharField(max_length = 15, choices=( ('educational','educational'),('social','social'),('entertainment','entertainment'),('bussiness','bussiness') ))
     location = models.CharField(max_length = 30)
-    time = models.DateTimeField('data published')
+    time = models.DateTimeField('Date/Time')
     owner = models.ForeignKey(User)
-    public = models.BooleanField()
+    private = models.BooleanField()
 
 
 class rsvp(models.Model):
