@@ -8,6 +8,8 @@ from eventster.models import conference, rsvp
 from django.contrib.staticfiles.storage import staticfiles_storage
 from django.core import serializers
 from collections import Iterable
+from django.contrib.auth.models import User
+import json
 
 def index(request):
     return render_to_response('eventster/index.html')
@@ -80,8 +82,27 @@ def OutputFormat(request, confall,t,c):
       	confall = conference.objects.filter(location__iexact=GET['city'])
       elif('genre' in GET):	 	
       	confall = conference.objects.filter(genre__iexact=GET['genre'])
+      elif('query' in GET and GET['query'] in ('genre')):
+	#List of genres
+	genre_list=['educational','social','entertainment','bussiness']
+	return HttpResponse(json.dumps(genre_list))
+      elif('query' in GET and GET['query'] in ('user')):
+	#List of current registered users, need to change this later
+	user_list = []
+	for user in User.objects.all():
+		user_list.append(user.username)
+	return HttpResponse(json.dumps(user_list))
       data = serializers.serialize(GET['output'], (confall if isinstance(confall, Iterable) else [confall]))
       return HttpResponse(data, mimetype='application/' + GET['output'])
+    elif('dev' in GET and GET['dev'] in ('and')):
+	# Need to change the following if conference model is updated.
+	#try:
+	con = conference(name=GET['xyz'], Agenda=GET['cba'], genre=GET['nmo'], location=GET['rst'], time=GET['igh'], owner=User.objects.get(username=GET['edf']), private=GET['ft'])
+	con.save()
+	#except:
+	#	pass
+      	#	#return HttpResponse('error!!')
+	return HttpResponse('Conference <b>'+str(con.name)+'</b> Created!!')		
     else:
       return HttpResponse(t.render(c))
 
