@@ -97,7 +97,7 @@ def OutputFormat(request, confall,t,c):
     elif('dev' in GET and GET['dev'] in ('and')):
 	# Need to change the following if conference model is updated.
 	#try:
-	con = conference(name=GET['xyz'], Agenda=GET['cba'], genre=GET['nmo'], location=GET['rst'], time=GET['igh'], owner=User.objects.get(username=GET['edf']), private=GET['ft'])
+	con = conference(name=GET['xyz'], Agenda=GET['cba'], genre=GET['nmo'], location=GET['rst'], time=GET['igh'], owner=User.objects.get(username=GET['edf']), private=False if GET['ft']=='False' else True)
 	con.save()
 	#except:
 	#	pass
