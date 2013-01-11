@@ -94,16 +94,21 @@ def OutputFormat(request, confall,t,c):
 	for user in User.objects.all():
 		user_list.append(user.username)
 	return HttpResponse(json.dumps(user_list))
+      elif('query' in GET and GET['query'] in ('currentuser')):
+	#return current user
+	user = request.user.username
+	if request.user.is_active == False:
+		user = ['empty']
+	return HttpResponse(json.dumps(user))
       data = serializers.serialize(GET['output'], (confall if isinstance(confall, Iterable) else [confall]))
       return HttpResponse(data, mimetype='application/' + GET['output'])
     elif('dev' in GET and GET['dev'] in ('and')):
 	# Need to change the following if conference model is updated.
-	#try:
-	con = conference(name=GET['xyz'], Agenda=GET['cba'], genre=GET['nmo'], location=GET['rst'], time=GET['igh'], owner=User.objects.get(username=GET['edf']), private=False if GET['ft']=='False' else True)
-	con.save()
-	#except:
-	#	pass
-      	#	#return HttpResponse('error!!')
+	try:
+		con = conference(name=GET['xyz'], Agenda=GET['cba'], genre=GET['nmo'], location=GET['rst'], time=GET['igh'], owner=User.objects.get(username=GET['edf']), private=False if GET['ft']=='False' else True)
+		con.save()
+	except:
+      		return HttpResponse('error!!')
 	return HttpResponse('Conference <b>'+str(con.name)+'</b> Created!!')		
     else:
       return HttpResponse(t.render(c))
