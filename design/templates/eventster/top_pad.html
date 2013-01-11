@@ -51,9 +51,19 @@
           <li><a href="/about">About</a></li>
           <li><a href="/createconf">Create Conference</a></li>
           <li><a href="/conf">List Conference</a></li>
-          <li><a href="/login_page">Login</a></li>
-          <li><a href="/admin">Admin</a></li>
           </ul>
+
+	  <!-- Add if and else, if logged in show username of user logged in, else Login button, And if user is superuser then print Admin -->
+	  	  <ul class="nav pull-right">
+		    {% if user.is_staff %}
+			  <li><a href="/admin">Admin</a></li>
+			{% endif %}
+            {% if user.is_authenticated %}
+			  <li><a href="/logout">Logout ({{ user.username }})</a></li>
+	        {% else %}
+			  <li><a href="/login_page">Login</a></li>
+		    {% endif %}
+		  </ul>
         </div><!--/.nav-collapse -->
       </div>
     </div>

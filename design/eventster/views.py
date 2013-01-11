@@ -12,10 +12,12 @@ from django.contrib.auth.models import User
 import json
 
 def index(request):
-    return render_to_response('eventster/index.html')
+    return render(request, 'eventster/index.html', {'user': request.user})
+
+# User.objects.get(id=request.session['member_id']) if ('member_id' in request.session) else None ,})
 
 def about(request):
-    return render_to_response('eventster/about.html')
+    return render(request, 'eventster/about.html', {'user': request.user})
 
 def LoginPage(request):
   if request.method == 'POST':
@@ -42,8 +44,8 @@ def LoginPage(request):
       if user is not None:
         if user.is_active:
           login(request, user)
-          #return HttpResponse('Success')
-          return HttpResponse('Success')
+	  request.session['member_id'] = user.id
+          return HttpResponse("You're Logged in.")
         else:
           pass
           #Return a 'disabled account' error message
@@ -52,13 +54,13 @@ def LoginPage(request):
     else:
       form = UserCreationForm()
       # use render instead of render_to_response
-      return render(request, "eventster/login.html", {'form': form,})
+      return render(request, "eventster/login.html", {'form': form, 'user': request.user})
 
 def ListConf(request):
     confall = conference.objects.all() 
     t =loader.get_template('eventster/confall.html')
     c = Context({
-        'confall': confall,
+        'confall': confall, 'user': request.user,
         })
     return OutputFormat(request,confall,t,c)
     
@@ -66,7 +68,7 @@ def ConfDetail(request, conf_id):
     confdetail = conference.objects.get(id=conf_id) 
     t =loader.get_template('eventster/confdetail.html')
     c = Context({
-        'confdetail': confdetail,
+        'confdetail': confdetail, 'user': request.user,
         })
     # in [] as serializers need iterable as parameter
     return OutputFormat(request,confdetail,t,c)
