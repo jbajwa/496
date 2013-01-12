@@ -10,6 +10,7 @@ from django.core import serializers
 from collections import Iterable
 from django.contrib.auth.models import User
 import json
+from forms import CreateConfForm
 
 def index(request):
     return render(request, 'eventster/index.html', {'user': request.user})
@@ -19,6 +20,9 @@ def index(request):
 def about(request):
     return render(request, 'eventster/about.html', {'user': request.user})
 
+def success(request):
+    return render(request, 'eventster/success.html', {'user': request.user})
+
 def LoginPage(request):
   if request.method == 'POST':
     username = request.POST['username']
@@ -27,7 +31,8 @@ def LoginPage(request):
     if user is not None:
       if user.is_active:
         login(request, user)
-        return render_to_response('eventster/success.html')
+        return render(request, 'eventster/login_success.html', {'user': request.user})
+
       else:
         pass
         #Return a 'disabled account' error message
@@ -55,6 +60,16 @@ def LoginPage(request):
       form = UserCreationForm()
       # use render instead of render_to_response
       return render(request, "eventster/login.html", {'form': form, 'user': request.user})
+
+def CreateConf(request):
+  if request.method == 'POST':
+    POST = request.POST
+    con = conference(name=POST['name'], Agenda=POST['Agenda'], genre=POST['genre'], location=POST['location'], time=POST['time'], owner=request.user, private=False if 'private' not in POST else True)
+    con.save()
+    return render(request, 'eventster/success.html', {'user': request.user})
+  else:
+    form = CreateConfForm()
+    return render(request, "eventster/conference_form.html", {'form': form, 'user': request.user})
 
 def ListConf(request):
     confall = conference.objects.all() 

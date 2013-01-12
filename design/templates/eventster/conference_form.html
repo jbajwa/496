@@ -1,12 +1,47 @@
 <html>
-  <body>
+<style type="text/css">
+body {
+padding-top: 80px;
+padding-bottom: 40px;
+background-color: #f5f5f5;
+}
+
+.form-signin {
+padding: 19px 29px 29px;
+margin: 0 auto 20px;
+background-color: #fff;
+border: 1px solid #e5e5e5;
+}
+</style>
+<body>
     {% include "eventster/top_pad.html" %}
-<form action="/createconf/" method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <input type="submit" value="Submit" />
-  <p><b>make sure the date is in the format mm/dd/yy</b></p>
-</form>
+
+{% block content %}
+{% if user.is_authenticated %}
+	<form class="form-signin" action="/createconf/" method="post">
+	{% csrf_token %}
+	<h3 class="form-signin-heading">Hi {{user.username}}, create an Event by filling out the form below!</h3>
+	<input type="text" class="input-block-level" maxlength=50 placeholder="Event Name"  name="name" value="" id="name">
+	<input type="text" class="input-block-level" maxlength=500 placeholder="Agenda" name="Agenda" value="" id="Agenda">
+	<p><label for="genre">Genre:</label> <select name="genre" id="genre">
+	<option value="" selected="selected">---------</option>
+	<option value="educational">educational</option>
+	<option value="social">social</option>
+	<option value="entertainment">entertainment</option>
+	<option value="bussiness">bussiness</option>
+	</select></p>
+	<input type="text" class="input-block-level" maxlength=40 placeholder="Location" name="location" value="" id="location">
+	<input type="text" class="input-block-level" placeholder="Date" name="time" value="" id="time">
+	<p><label for="private">Private:</label> <input type="checkbox" name="private" id="private" /></p>
+	<button class="btn btn-large btn-primary" type="submit">Create</button>
+	<br>
+	<br>
+	</form>
+{% else %}
+	<h3 class="form-signin-heading">Plese login before creating an Event</h3><a href="/login_page">click here</a>
+{% endif %}
+	
+{% endblock %}
 
 </body>
 </html>
