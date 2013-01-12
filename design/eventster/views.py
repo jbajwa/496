@@ -19,6 +19,9 @@ def index(request):
 def about(request):
     return render(request, 'eventster/about.html', {'user': request.user})
 
+def success(request):
+    return render(request, 'eventster/success.html', {'user': request.user})
+
 def LoginPage(request):
   if request.method == 'POST':
     username = request.POST['username']
@@ -27,7 +30,8 @@ def LoginPage(request):
     if user is not None:
       if user.is_active:
         login(request, user)
-        return render_to_response('eventster/success.html')
+        return render(request, 'eventster/login_success.html', {'user': request.user})
+
       else:
         pass
         #Return a 'disabled account' error message
