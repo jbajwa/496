@@ -4,10 +4,10 @@ from django.contrib.auth.models import User
 class conference(models.Model):
     def __unicode__(self):
         return self.name
-    name = models.CharField(max_length = 10)
-    Agenda = models.CharField(max_length = 300)
+    name = models.CharField(max_length = 50)
+    Agenda = models.CharField(max_length = 500)
     genre = models.CharField(max_length = 15, choices=( ('educational','educational'),('social','social'),('entertainment','entertainment'),('bussiness','bussiness') ))
-    location = models.CharField(max_length = 30)
+    location = models.CharField(max_length = 40)
     time = models.DateTimeField('Date/Time')
     owner = models.ForeignKey(User)
     private = models.BooleanField()
@@ -18,6 +18,6 @@ class rsvp(models.Model):
       return "%s is attending conference : %s " % (self.user.username, self.rsvp.name)
     user = models.ForeignKey(User)
     rsvp = models.ForeignKey(conference)
-    remark= models.CharField(max_length = 100, blank=True, null=True,)
+    remark= models.CharField(max_length = 500, blank=True, null=True,)
 
 # Create your models here.
