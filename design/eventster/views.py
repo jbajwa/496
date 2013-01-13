@@ -10,7 +10,7 @@ from django.core import serializers
 from collections import Iterable
 from django.contrib.auth.models import User
 import json
-from forms import CreateConfForm
+from forms import CreateConfForm, UserForm
 
 def index(request):
     return render(request, 'eventster/index.html', {'user': request.user})
@@ -49,7 +49,6 @@ def LoginPage(request):
       if user is not None:
         if user.is_active:
           login(request, user)
-	  request.session['member_id'] = user.id
           return HttpResponse("You're Logged in.")
         else:
           pass
@@ -70,6 +69,21 @@ def CreateConf(request):
   else:
     form = CreateConfForm()
     return render(request, "eventster/conference_form.html", {'form': form, 'user': request.user})
+
+def CreateUser(request):
+  if request.method == 'POST':
+    # save form, creates user with post variables
+    form = UserForm(request.POST)
+    if form.is_valid():
+      usr = form.save()
+      # mocking what autheticate does
+      usr.backend='django.contrib.auth.backends.ModelBackend' 
+      login(request, usr)
+      return render(request, 'eventster/success.html', {'user': request.user})
+  else:
+    form = UserForm()
+
+  return render(request, "eventster/register_form.html", {'form': form, 'user': request.user})
 
 def ListConf(request):
     confall = conference.objects.all() 
