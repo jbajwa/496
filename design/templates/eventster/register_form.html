@@ -1,0 +1,42 @@
+<html>
+<style type="text/css">
+body {
+padding-top: 80px;
+padding-bottom: 40px;
+background-color: #f5f5f5;
+}
+
+.form-signin {
+padding: 19px 29px 29px;
+max-width: 500px;
+margin: 0 auto 20px;
+background-color: #fff;
+border: 1px solid #e5e5e5;
+}
+</style>
+<body>
+    {% include "eventster/top_pad.html" %}
+
+  {% block content %}
+  {% if form.errors %}
+	<h4 class="form-signin-heading">Failed due to follwoing errors:</h4>
+    {% for errors in form.errors.items %}
+      {% for error in errors %}
+        {{ error }}
+      {% endfor %}
+      {% endfor %}
+  {% else %}
+	<form class="form-signin" action="/register/" method="post">
+	{% csrf_token %}
+	<h3 class="form-signin-heading">Registration form</h3>
+	<input type="text" class="input-block-level" maxlength=50 placeholder="enter name"  name="username" value="" id="username">
+	<input type="password" class="input-block-level" maxlength=50 placeholder="type password" name="password1" value="" id="password1">
+	<input type="password" class="input-block-level" maxlength=50 placeholder="type password again" name="password2" value="" id="password2">
+  <input type="email" class="input-block-level" maxlength=40 placeholder="enter email" name="email" value="" id="email">
+  <button class="btn btn-large btn-primary" type="submit">Submit</button>
+</form>
+{% endif %}
+{% endblock %}
+
+</body>
+</html>
