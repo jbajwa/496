@@ -38,8 +38,10 @@ border: 1px solid #e5e5e5;
 	<br>
 	</form>
   {% else %}
-  <h3 class="form-signin-heading">Plese login before creating an Event</h3>
-  <a class="btn btn-large btn-primary" href="/login_page/" >Login</a>
+  <div class="form-signin">
+    <h3 class="form-signin-heading">Plese login before creating an Event</h3>
+    <a class="btn btn-large btn-primary" href="/login_page/"  >Login</a>
+  </div>
 {% endif %}
 	
 {% endblock %}
