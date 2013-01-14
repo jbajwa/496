@@ -37,8 +37,9 @@ border: 1px solid #e5e5e5;
 	<br>
 	<br>
 	</form>
-{% else %}
-	<h3 class="form-signin-heading">Plese login before creating an Event</h3><a href="/login_page">click here</a>
+  {% else %}
+  <h3 class="form-signin-heading">Plese login before creating an Event</h3>
+  <a class="btn btn-large btn-primary" href="/login_page/" >Login</a>
 {% endif %}
 	
 {% endblock %}
