@@ -9,8 +9,10 @@ from django.contrib.staticfiles.storage import staticfiles_storage
 from django.core import serializers
 from collections import Iterable
 from django.contrib.auth.models import User
+from django.middleware.csrf import get_token
 import json
 from forms import CreateConfForm, UserForm
+from django.views.decorators.csrf import csrf_exempt
 
 def index(request):
     return render(request, 'eventster/index.html', {'user': request.user})
@@ -23,42 +25,64 @@ def about(request):
 def success(request):
     return render(request, 'eventster/success.html', {'user': request.user})
 
+@csrf_exempt
 def LoginPage(request):
   if request.method == 'POST':
-    username = request.POST['username']
-    password = request.POST['password']
-    user = authenticate(username=username, password=password)
-    if user is not None:
-      if user.is_active:
-        login(request, user)
-        return render(request, 'eventster/login_success.html', {'user': request.user})
-
-      else:
-        pass
-        #Return a 'disabled account' error message
+    if 'android' in request.POST:
+	    username = request.POST['username']
+	    password = request.POST['password']
+ 	    #csrf_token =  request.POST['csrf_token']
+	    user = authenticate(username=username, password=password)
+	    if user is not None:
+	      if user.is_active:
+		login(request, user)
+	        return HttpResponse("Your're logged in")
+	      else:
+		pass
+		#Return a 'disabled account' error message
+	    else:
+	      return HttpResponse('Invalid info')
+	      #Return an 'invalid login' error message.
     else:
-      return HttpResponse('Invalid info')
-      #Return an 'invalid login' error message.
+	    username = request.POST['username']
+	    password = request.POST['password']
+	    user = authenticate(username=username, password=password)
+	    if user is not None:
+	      if user.is_active:
+		login(request, user)
+		return render(request, 'eventster/login_success.html', {'user': request.user})
+
+	      else:
+		pass
+		#Return a 'disabled account' error message
+	    else:
+	      return HttpResponse('Invalid info')
+	      #Return an 'invalid login' error message.
+	
   else:
     GET = request.GET
-    if('username' in GET and 'password' in GET ):
-      lst = []
-      user = GET['username']
-      paswd = GET['password']
-      user = authenticate(username = user , password = paswd)
-      if user is not None:
-        if user.is_active:
-          login(request, user)
-          return HttpResponse("You're Logged in.")
-        else:
-          pass
-          #Return a 'disabled account' error message
-      else:
-        return HttpResponse('Invalid info!')
+    if('output' in GET ):
+	    tkn = get_token(request)
+	    return HttpResponse(json.dumps(tkn))
+     
+   # if('username' in GET and 'password' in GET ):
+   #   lst = []
+   #   user = GET['username']
+   #   paswd = GET['password']
+   #   user = authenticate(username = user , password = paswd)
+   #   if user is not None:
+   #     if user.is_active:
+   #       login(request, user)
+   #       return HttpResponse("You're Logged in.")
+   #     else:
+   #       pass
+   #       #Return a 'disabled account' error message
+   #   else:
+   #     return HttpResponse('Invalid info!')
     else:
-      form = UserCreationForm()
-      # use render instead of render_to_response
-      return render(request, "eventster/login.html", {'form': form, 'user': request.user})
+       form = UserCreationForm()
+       # use render instead of render_to_response
+       return render(request, "eventster/login.html", {'form': form, 'user': request.user})
 
 def CreateConf(request):
   if request.method == 'POST':
@@ -129,6 +153,11 @@ def OutputFormat(request, confall,t,c):
 	if request.user.is_active == False:
 		user = ['empty']
 	return HttpResponse(json.dumps(user))
+      elif('query' in GET and GET['query'] in ('myconf')):
+	if request.user.is_active == True:
+      		confall = conference.objects.filter(owner=request.user)
+	else:
+		return HttpResponse("No user logged in")
       data = serializers.serialize(GET['output'], (confall if isinstance(confall, Iterable) else [confall]))
       return HttpResponse(data, mimetype='application/' + GET['output'])
     elif('dev' in GET and GET['dev'] in ('and')):
