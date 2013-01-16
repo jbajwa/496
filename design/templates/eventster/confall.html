@@ -21,17 +21,21 @@ html, body {
   <div style="float: left; padding-right: 30px">
 
     {% if confall %}
-    <ul class="unstyled" style="margin-top: 20px">
-    {% for conf in confall %}
-    <li style="color: #404040">
-    <span style="padding: 5px 10px; background: #ccc; font-size: 12pt; font-weight: bold; color: #000">{{ conf.id }}</span>&nbsp;
-    <a class ="lead" href="/conf/{{ conf.id }}/">{{ conf.name }}</a>
-    <br /><br />
-    </li>
-    {% endfor %}
-    </ul>
+	    {% if user.is_authenticated %}
+		<a class="btn btn-large btn-primary" href="/conf/?events=myconf" >My Events</a> 
+		<a class="btn btn-large btn-primary" href="/conf/" >All Events</a> 
+   	    {% endif %}
+	    <ul class="unstyled" style="margin-top: 20px">
+	    {% for conf in confall %}
+		<li style="color: #404040">
+		<span style="padding: 5px 10px; background: #ccc; font-size: 12pt; font-weight: bold; color: #000">{{ conf.id }}</span>&nbsp;
+		<a class ="lead" href="/conf/{{ conf.id }}/">{{ conf.name }}</a>
+		<br /><br />
+		</li>
+	    {% endfor %}
+	    </ul>
     {% else %}
-    <p>No conferences available.</p>
+	    <p>No conferences available.</p>
     {% endif %}
   </div>
 <div style="clear: both"></div>
