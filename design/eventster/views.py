@@ -50,8 +50,10 @@ def LoginPage(request):
 	    if user is not None:
 	      if user.is_active:
 		login(request, user)
+		if 'forward' in request.session:
+			forward = request.session['forward']
+			return render(request, 'eventster/login_success.html', {'user': request.user, 'forward': forward})
 		return render(request, 'eventster/login_success.html', {'user': request.user})
-
 	      else:
 		pass
 		#Return a 'disabled account' error message
@@ -81,6 +83,8 @@ def LoginPage(request):
    #     return HttpResponse('Invalid info!')
     else:
        form = UserCreationForm()
+       if('forward' in GET):
+       		request.session['forward']= GET['forward']
        # use render instead of render_to_response
        return render(request, "eventster/login.html", {'form': form, 'user': request.user})
 
@@ -110,7 +114,11 @@ def CreateUser(request):
   return render(request, "eventster/register_form.html", {'form': form, 'user': request.user})
 
 def ListConf(request):
-    confall = conference.objects.all() 
+    GET = request.GET
+    if('events' in GET and GET['events'] in ('myconf')):
+   	confall = conference.objects.filter(owner=request.user)
+    else:
+    	confall = conference.objects.all() 
     t =loader.get_template('eventster/confall.html')
     c = Context({
         'confall': confall, 'user': request.user,
@@ -119,12 +127,45 @@ def ListConf(request):
     
 def ConfDetail(request, conf_id):
     confdetail = conference.objects.get(id=conf_id) 
+    rsvpobjs = None
+    if 'output' in request.GET:
+	    t =loader.get_template('eventster/confdetail.html')
+	    c = Context({
+		'confdetail': confdetail, 'user': request.user,
+		})
+	    # in [] as serializers need iterable as parameter
+	    return OutputFormat(request,confdetail,t,c)
+    else:
+	    rlist = []
+            for rs in rsvp.objects.filter(rsvp=confdetail):
+		rlist.append(rs.user.username)
+	    t =loader.get_template('eventster/confdetail.html')
+	    c = Context({
+		'confdetail': confdetail, 'user': request.user, 'rsvpobjs': rsvpobjs , 'rsvplist': rlist,
+		})
+    return HttpResponse(t.render(c))
+
+def Rsvp(request):
+    GET = request.GET
+    conf = conference.objects.get(id=GET['confid'])
+    rsvpobjs = None
+    if ('acc' in GET and GET['acc'] in ('add')):
+	    r = rsvp(user = request.user, rsvp = conf, remark='none')
+	    r.save()
+    elif ('acc' in GET and GET['acc'] in ('remove')):
+	    r = rsvp.objects.get(user = request.user, rsvp = conf)
+	    r.delete()
+    elif ('event' in GET and GET['event'] in ('attendees')):
+	    rsvpobjs = rsvp.objects.filter(rsvp=conf)
+    rlist = []
+    for rs in rsvp.objects.filter(rsvp=conf):
+	rlist.append(rs.user.username)
     t =loader.get_template('eventster/confdetail.html')
     c = Context({
-        'confdetail': confdetail, 'user': request.user,
+	'confdetail': conf, 'user': request.user, 'rsvpobjs': rsvpobjs , 'rsvplist': rlist,
         })
-    # in [] as serializers need iterable as parameter
-    return OutputFormat(request,confdetail,t,c)
+    return HttpResponse(t.render(c))
+    
 
 # Decide to output Json or HTML based on output variable from httprequest
 def OutputFormat(request, confall,t,c):

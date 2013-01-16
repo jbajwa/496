@@ -19,5 +19,7 @@ class rsvp(models.Model):
     user = models.ForeignKey(User)
     rsvp = models.ForeignKey(conference)
     remark= models.CharField(max_length = 500, blank=True, null=True,)
+    class Meta:
+       unique_together = ('user', 'rsvp',)
 
 # Create your models here.

@@ -2,7 +2,11 @@
   <body>
     {% include "eventster/top_pad.html" %}
     <p>
-	<h4> Welcome {{ user.username }}! </h4>
+	{% if forward %}
+		<h4> Welcome {{ user.username }}! Click<a href="{{ forward }}"> here </a>to continue.</h4>
+	{% else %}
+		<h4> Welcome {{ user.username }}! Click<a href="/"> here </a>to continue.</h4>
+	{% endif %}
     </p>
   </body>
 </html>
