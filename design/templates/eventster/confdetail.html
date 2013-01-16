@@ -36,18 +36,18 @@
 					</ul>
 				{% endfor %}
 			{% else %}
-  				<a class="btn btn-large btn-primary" href="/rsvp/?event=attendees&confid={{confdetail.id}}">List of Attendees</a>
+  				<ul><a class="btn btn-large btn-primary" href="/rsvp/?event=attendees&confid={{confdetail.id}}">List of Attendees</a></ul>
 			{% endif %}
 		{% else %}
 			{% if user.username in rsvplist %}
-  				<button class="btn btn-large btn-success" color="#f5f5f5">You're RSVPed</button>
-  				<a class="btn btn-large btn-danger" href="/rsvp/?confid={{confdetail.id}}&acc=remove">Cancel</a>
+  				<ul><button class="btn btn-large btn-success" color="#f5f5f5">You've RSVPed!</button>
+  				<a class="btn btn-large btn-danger" href="/rsvp/?confid={{confdetail.id}}&acc=remove">Cancel</a></ul>
 			{% else %}
-  				<a class="btn btn-large btn-primary" href="/rsvp/?confid={{confdetail.id}}&acc=add">RSVP</a>
+  				<ul><a class="btn btn-large btn-primary" href="/rsvp/?confid={{confdetail.id}}&acc=add">RSVP</a></ul>
 			{% endif %}
 		{% endif %}
 	{% else %}
-  		<a class="btn btn-large btn-primary" href="/login_page/?forward=/conf/{{confdetail.id}}/">Login to RSVP</a>
+  		<ul><a class="btn btn-large btn-primary" href="/login_page/?forward=/conf/{{confdetail.id}}/">Login to RSVP</a></ul>
 	{% endif %}
 </div>
 {% else %}
