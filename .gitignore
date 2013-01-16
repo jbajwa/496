@@ -5,3 +5,5 @@
 # vim swap files #
 ###################
 *.swp
+
+*db.sqlite3

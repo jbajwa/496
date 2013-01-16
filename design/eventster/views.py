@@ -58,7 +58,7 @@ def LoginPage(request):
 		pass
 		#Return a 'disabled account' error message
 	    else:
-	      return HttpResponse('Invalid info')
+	      return render(request, 'eventster/login_failure.html', {'user': request.user})
 	      #Return an 'invalid login' error message.
 	
   else:
