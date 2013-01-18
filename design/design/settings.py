@@ -1,6 +1,9 @@
 # Django settings for design project.
 import os
 
+# sessions end when browser closes, default value is False
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 SITE_ROOT = os.path.dirname(os.path.realpath(__file__))
