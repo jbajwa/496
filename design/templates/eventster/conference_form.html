@@ -7,7 +7,7 @@ background-color: #f5f5f5;
 }
 
 .form-signin {
-padding: 19px 29px 29px;
+padding: 19px 20% 29px;
 margin: 0 auto 20px;
 background-color: #fff;
 border: 1px solid #e5e5e5;
@@ -21,8 +21,14 @@ border: 1px solid #e5e5e5;
 	<form class="form-signin" action="/createconf/" method="post">
 	{% csrf_token %}
 	<h3 class="form-signin-heading">Hi {{user.username}}, create an Event by filling out the form below!</h3>
-	<input type="text" class="input-block-level" maxlength=50 placeholder="Event Name"  name="name" value="" id="name">
-	<input type="text" class="input-block-level" maxlength=500 placeholder="Agenda" name="Agenda" value="" id="Agenda">
+        <div class="input">
+          <textarea class="xlarge" id="name" name="name" rows="1" placeholder="Event Name"  maxlength=50  ></textarea>
+	</div>
+	<label for="textarea">Agenda/discription</label>
+            <div class="input">
+              <textarea class="xxlarge" id="Agenda" name="Agenda" rows="5" maxlength=500 ></textarea>
+	    </div>
+	<!--<input type="text" class="xxlarge" maxlength=500 placeholder="Agenda" name="Agenda" value="" id="Agenda"-->
 	<p><label for="genre">Genre:</label> <select name="genre" id="genre">
 	<option value="" selected="selected">---------</option>
 	<option value="educational">educational</option>
@@ -30,8 +36,23 @@ border: 1px solid #e5e5e5;
 	<option value="entertainment">entertainment</option>
 	<option value="bussiness">bussiness</option>
 	</select></p>
-	<input type="text" class="input-block-level" maxlength=40 placeholder="Location" name="location" value="" id="location">
-	<input type="text" class="input-block-level" placeholder="Date" name="time" value="" id="time">
+        <div class="input">
+          <textarea class="xlarge" id="location" name="location" rows="1" placeholder="Location"  maxlength=40  ></textarea>
+	</div>
+	<div id="datetimepicker1" class="input-append">
+	  <input data-format="yyyy-MM-dd"  class="xlarge" id="date" name="date" rows="1" placeholder="date" ></input>
+	  <span class="add-on">
+	    <i data-time-icon="icon-time" data-date-icon="icon-calendar">
+	    </i>
+	  </span>
+	</div>
+	<div id="datetimepicker2" class="input-append">
+	  <input data-format="hh:mm:ss"  class="xlarge" id="time" name="time" rows="1" placeholder="time" ></input>
+	  <span class="add-on">
+	    <i data-time-icon="icon-time" data-date-icon="icon-calendar">
+	    </i>
+	  </span>
+	</div>
 	<p><label for="private">Private:</label> <input type="checkbox" name="private" id="private" /></p>
 	<button class="btn btn-large btn-primary" type="submit">Create</button>
 	<br>
@@ -46,5 +67,18 @@ border: 1px solid #e5e5e5;
 	
 {% endblock %}
 
+<script type="text/javascript">
+  $(function() {
+    $('#datetimepicker1').datetimepicker({
+      pickTime: false
+    });
+  });
+  $(function() {
+    $('#datetimepicker2').datetimepicker({
+      pickDate: false
+    });
+  });
+</script>
+ <script src="/static/bootstrap/js/bootstrap-datetimepicker.min.js"></script>
 </body>
 </html>

@@ -29,7 +29,9 @@ border: 1px solid #e5e5e5;
 	<form class="form-signin" action="/register/" method="post">
 	{% csrf_token %}
 	<h3 class="form-signin-heading">Registration form</h3>
-	<input type="text" class="input-block-level" maxlength=50 placeholder="enter name"  name="username" value="" id="username">
+	<input type="text" class="input-block-level" maxlength=50 placeholder="first name"  name="first_name" value="" id="first_name">
+	<input type="text" class="input-block-level" maxlength=50 placeholder="last name"  name="last_name" value="" id="last_name">
+	<input type="text" class="input-block-level" maxlength=50 placeholder="username"  name="username" value="" id="username">
 	<input type="password" class="input-block-level" maxlength=50 placeholder="type password" name="password1" value="" id="password1">
 	<input type="password" class="input-block-level" maxlength=50 placeholder="type password again" name="password2" value="" id="password2">
   <input type="email" class="input-block-level" maxlength=40 placeholder="enter email" name="email" value="" id="email">
