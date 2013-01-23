@@ -8,7 +8,8 @@ class conference(models.Model):
     Agenda = models.CharField(max_length = 500)
     genre = models.CharField(max_length = 15, choices=( ('educational','educational'),('social','social'),('entertainment','entertainment'),('bussiness','bussiness') ))
     location = models.CharField(max_length = 40)
-    time = models.DateTimeField('Date/Time')
+    date= models.DateField('Date')
+    time = models.TimeField('Time')
     owner = models.ForeignKey(User)
     private = models.BooleanField()
 

@@ -91,7 +91,7 @@ def LoginPage(request):
 def CreateConf(request):
   if request.method == 'POST':
     POST = request.POST
-    con = conference(name=POST['name'], Agenda=POST['Agenda'], genre=POST['genre'], location=POST['location'], time=POST['time'], owner=request.user, private=False if 'private' not in POST else True)
+    con = conference(name=POST['name'], Agenda=POST['Agenda'], genre=POST['genre'], location=POST['location'], date=POST['date'], time=POST['time'], owner=request.user, private=False if 'private' not in POST else True)
     con.save()
     return render(request, 'eventster/success.html', {'user': request.user})
   else:
@@ -204,7 +204,7 @@ def OutputFormat(request, confall,t,c):
     elif('dev' in GET and GET['dev'] in ('and')):
 	# Need to change the following if conference model is updated.
 	try:
-		con = conference(name=GET['xyz'], Agenda=GET['cba'], genre=GET['nmo'], location=GET['rst'], time=GET['igh'], owner=User.objects.get(username=GET['edf']), private=False if GET['ft']=='False' else True)
+		con = conference(name=GET['xyz'], Agenda=GET['cba'], genre=GET['nmo'], location=GET['rst'], date= GET['igh'], time=GET['rss'], owner=User.objects.get(username=GET['edf']), private=False if GET['ft']=='False' else True)
 		con.save()
 	except:
       		return HttpResponse('error!!')

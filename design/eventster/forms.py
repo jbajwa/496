@@ -7,7 +7,8 @@ class CreateConfForm(forms.Form):
     Agenda = forms.CharField(max_length = 500)
     genre = forms.CharField(max_length = 15)
     location = forms.CharField(max_length = 40)
-    time = forms.DateTimeField('Date/Time')
+    date = forms.DateField('Date')
+    time = forms.TimeField('Time')
     private = forms.BooleanField()
 
 class UserForm(UserCreationForm):
