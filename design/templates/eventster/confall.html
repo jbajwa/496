@@ -27,11 +27,13 @@ html, body {
    	    {% endif %}
 	    <ul class="unstyled" style="margin-top: 20px">
 	    {% for conf in confall %}
-		<li style="color: #404040">
-		<span style="padding: 5px 10px; background: #ccc; font-size: 12pt; font-weight: bold; color: #000">{{ conf.id }}</span>&nbsp;
-		<a class ="lead" href="/conf/{{ conf.id }}/">{{ conf.name }}</a>
-		<br /><br />
-		</li>
+		{% if not conf.private or conf.owner == user %}
+			<li style="color: #404040">
+			<span style="padding: 5px 10px; background: #ccc; font-size: 12pt; font-weight: bold; color: #000">{{ conf.id }}</span>&nbsp;
+			<a class ="lead" href="/conf/{{ conf.id }}/">{{ conf.name }}</a>
+			<br /><br />
+			</li>
+		{% endif %}
 	    {% endfor %}
 	    </ul>
     {% else %}
