@@ -107,7 +107,10 @@ def CreateUser(request):
       # mocking what autheticate does
       usr.backend='django.contrib.auth.backends.ModelBackend' 
       login(request, usr)
-      return render(request, 'eventster/success.html', {'user': request.user})
+      if 'forward' in request.session:
+	forward = request.session['forward']
+	return render(request, 'eventster/login_success.html', {'user': request.user, 'forward': forward})
+      return render(request, 'eventster/login_success.html', {'user': request.user})
   else:
     form = UserForm()
 
