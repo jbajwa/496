@@ -98,6 +98,7 @@ def CreateConf(request):
     form = CreateConfForm()
     return render(request, "eventster/conference_form.html", {'form': form, 'user': request.user})
 
+@csrf_exempt
 def CreateUser(request):
   if request.method == 'POST':
     # save form, creates user with post variables
