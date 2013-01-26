@@ -218,10 +218,13 @@ def OutputFormat(request, confall,t,c):
     elif('dev' in GET and GET['dev'] in ('and')):
 	# Need to change the following if conference model is updated.
 	try:
-		con = conference(name=GET['xyz'], Agenda=GET['cba'], genre=GET['nmo'], location=GET['rst'], date= GET['igh'], time=GET['rss'], owner=User.objects.get(username=GET['edf']), private=False if GET['ft']=='False' else True)
+		con = conference(name=GET['xyz'], Agenda=GET['cba'], genre=GET['nmo'], location=GET['rst'], date= GET['igh'], time=GET['rss'], owner=request.user, private=False if GET['ft']=='False' else True)
 		con.save()
 	except:
-      		return HttpResponse('error!!')
+		if not request.user.is_authenticated():
+			return HttpResponse("Error! User not logged in!")
+		return HttpResponse('error!!')
+		
 	return HttpResponse('Conference <b>'+str(con.name)+'</b> Created!!')		
     else:
       return HttpResponse(t.render(c))
