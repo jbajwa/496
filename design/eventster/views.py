@@ -153,12 +153,22 @@ def Rsvp(request):
     GET = request.GET
     conf = conference.objects.get(id=GET['confid'])
     rsvpobjs = None
+    # dev = device , and = android, when RSVP from android properly return correct httpresponse
     if ('acc' in GET and GET['acc'] in ('add')):
+	    if ('dev' in GET and GET['dev'] in ('and')) and request.user.is_authenticated() == False :
+		return HttpResponse("Error! User not logged in!")
 	    r = rsvp(user = request.user, rsvp = conf, remark='none')
 	    r.save()
+	    if ('dev' in GET and GET['dev'] in ('and')):
+		return HttpResponse("success")
+
     elif ('acc' in GET and GET['acc'] in ('remove')):
+	    if ('dev' in GET and GET['dev'] in ('and')) and request.user.is_authenticated() == False :
+		return HttpResponse("Error! User not logged in!")
 	    r = rsvp.objects.get(user = request.user, rsvp = conf)
 	    r.delete()
+	    if ('dev' in GET and GET['dev'] in ('and')):
+		return HttpResponse("success")
     elif ('event' in GET and GET['event'] in ('attendees')):
 	    rsvpobjs = rsvp.objects.filter(rsvp=conf)
     rlist = []
