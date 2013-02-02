@@ -14,6 +14,12 @@ import json
 from forms import CreateConfForm, UserForm
 from django.views.decorators.csrf import csrf_exempt
 
+#ERROR/SUCCESS status codes for andriod
+STATUS_SUCCESS = 121
+STATUS_INVALID_DATE = 221
+STATUS_INVALID_PARAM = 222
+STATUS_INVALID_USER = 223
+
 def index(request):
     return render(request, 'eventster/index.html', {'user': request.user})
 
@@ -36,7 +42,7 @@ def LoginPage(request):
 	    if user is not None:
 	      if user.is_active:
 		login(request, user)
-	        return HttpResponse("Your're logged in")
+	        return HttpResponse(STATUS_SUCCESS)
 	      else:
 		pass
 		#Return a 'disabled account' error message
@@ -156,19 +162,19 @@ def Rsvp(request):
     # dev = device , and = android, when RSVP from android properly return correct httpresponse
     if ('acc' in GET and GET['acc'] in ('add')):
 	    if ('dev' in GET and GET['dev'] in ('and')) and request.user.is_authenticated() == False :
-		return HttpResponse("Error! User not logged in!")
+		return HttpResponse(STATUS_INVALID_USER)
 	    r = rsvp(user = request.user, rsvp = conf, remark='none')
 	    r.save()
 	    if ('dev' in GET and GET['dev'] in ('and')):
-		return HttpResponse("success")
+		return HttpResponse(STATUS_SUCCESS)
 
     elif ('acc' in GET and GET['acc'] in ('remove')):
 	    if ('dev' in GET and GET['dev'] in ('and')) and request.user.is_authenticated() == False :
-		return HttpResponse("Error! User not logged in!")
+		return HttpResponse(STATUS_INVALID_USER)
 	    r = rsvp.objects.get(user = request.user, rsvp = conf)
 	    r.delete()
 	    if ('dev' in GET and GET['dev'] in ('and')):
-		return HttpResponse("success")
+		return HttpResponse(STATUS_SUCCESS)
     elif ('event' in GET and GET['event'] in ('attendees')):
 	    rsvpobjs = rsvp.objects.filter(rsvp=conf)
     rlist = []
@@ -194,7 +200,7 @@ def OutputFormat(request, confall,t,c):
       	confall = conference.objects.filter(genre__iexact=GET['genre'])
       elif('query' in GET and GET['query'] in ('genre')):
 	#List of genres
-	genre_list=['educational','social','entertainment','bussiness']
+	genre_list=['educational','social','entertainment','business']
 	return HttpResponse(json.dumps(genre_list))
       elif('query' in GET and GET['query'] in ('user')):
 	#List of current registered users, need to change this later
@@ -206,13 +212,13 @@ def OutputFormat(request, confall,t,c):
 	#return current user
 	user = request.user.username
 	if request.user.is_active == False:
-		user = ['empty']
+		return HttpResponse(STATUS_INVALID_USER)
 	return HttpResponse(json.dumps(user))
       elif('query' in GET and GET['query'] in ('myconf')):
 	if request.user.is_active == True:
       		confall = conference.objects.filter(owner=request.user)
 	else:
-		return HttpResponse("No user logged in")
+		return HttpResponse(STATUS_INVALID_USER)
       data = serializers.serialize(GET['output'], (confall if isinstance(confall, Iterable) else [confall]))
       return HttpResponse(data, mimetype='application/' + GET['output'])
     elif('dev' in GET and GET['dev'] in ('and')):
@@ -222,10 +228,10 @@ def OutputFormat(request, confall,t,c):
 		con.save()
 	except:
 		if not request.user.is_authenticated():
-			return HttpResponse("Error! User not logged in!")
-		return HttpResponse('error!!')
+			return HttpResponse(STATUS_INVALID_USER)
+		return HttpResponse(STATUS_INVALID_PARAM)
 		
-	return HttpResponse('Conference <b>'+str(con.name)+'</b> Created!!')		
+	return HttpResponse(STATUS_SUCCESS)
     else:
       return HttpResponse(t.render(c))
 

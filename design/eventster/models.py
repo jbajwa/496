@@ -6,7 +6,7 @@ class conference(models.Model):
         return self.name
     name = models.CharField(max_length = 50)
     Agenda = models.CharField(max_length = 500)
-    genre = models.CharField(max_length = 15, choices=( ('educational','educational'),('social','social'),('entertainment','entertainment'),('bussiness','bussiness') ))
+    genre = models.CharField(max_length = 15, choices=( ('educational','educational'),('social','social'),('entertainment','entertainment'),('business','business') ))
     location = models.CharField(max_length = 40)
     date= models.DateField('Date')
     time = models.TimeField('Time')
