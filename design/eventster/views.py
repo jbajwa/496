@@ -97,7 +97,7 @@ def LogoutAndroid(request):
 def CreateConf(request):
   if request.method == 'POST':
     # Populate event using POST protocol
-    if 'android' in request.method:
+    if 'android' in request.POST:
 	    POST = request.POST
 	    try:
 		    con = conference(name=POST['name'], Agenda=POST['Agenda'], genre=POST['genre'], location=POST['location'], date=POST['date'], time=POST['time'], owner=request.user, private=False if 'private' not in POST else True)
@@ -132,21 +132,24 @@ def CreateConf(request):
 def CreateUser(request):
   if request.method == 'POST':
     # save form, creates user with post variables
-	if 'android' in request.method:
-	    form = userform(request.post)
+	if 'android' in request.POST:
+	    try:
+		form = UserForm(request.POST)
+	    except:
+		return HttpResponse(STATUS_INVALID_PARAM)
 	    if form.is_valid():
 		usr = form.save();
-	        usr.backend='django.contrib.auth.backends.modelbackend' 
+	        usr.backend='django.contrib.auth.backends.ModelBackend' 
 	        login(request, usr)
 		return HttpResponse(STATUS_SUCCESS)
 	    return HttpResponse(STATUS_INVALID_PARAM)
 		
 	else:    
-	    form = userform(request.post)
+	    form = UserForm(request.POST)
 	    if form.is_valid():
 	      usr = form.save()
 	      # mocking what autheticate does
-	      usr.backend='django.contrib.auth.backends.modelbackend' 
+	      usr.backend='django.contrib.auth.backends.ModelBackend' 
 	      login(request, usr)
 	      if 'forward' in request.session:
 		forward = request.session['forward']
@@ -154,8 +157,8 @@ def CreateUser(request):
 	      return render(request, 'eventster/login_success.html', {'user': request.user})
   else:
     form = UserForm()
+    return render(request, "eventster/register_form.html", {'form': form, 'user': request.user})
 
-  return render(request, "eventster/register_form.html", {'form': form, 'user': request.user})
 
 def ListConf(request):
     GET = request.GET
