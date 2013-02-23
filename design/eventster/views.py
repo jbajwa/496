@@ -111,6 +111,7 @@ def LogoutAndroid(request):
 @csrf_exempt
 def CreateConf(request):
   if request.method == 'POST':
+    # Populate event using POST protocol
     if 'android' in request.method:
 	    POST = request.POST
 	    try:
@@ -124,9 +125,23 @@ def CreateConf(request):
 	    con = conference(name=POST['name'], Agenda=POST['Agenda'], genre=POST['genre'], location=POST['location'], date=POST['date'], time=POST['time'], owner=request.user, private=False if 'private' not in POST else True)
 	    con.save()
 	    return render(request, 'eventster/success.html', {'user': request.user})
-  else:
-    form = CreateConfForm()
-    return render(request, "eventster/conference_form.html", {'form': form, 'user': request.user})
+  
+  # Populate event using GET protocol
+  if request.method == 'GET':
+        GET = request.GET	
+	if('dev' in GET and GET['dev'] in ('and')):
+	# Need to change the following if conference model is updated.
+		try:
+			con = conference(name=GET['xyz'], Agenda=GET['cba'], genre=GET['nmo'], location=GET['rst'], date= GET['igh'], time=GET['rss'], owner=request.user, private=False if GET['ft']=='False' else True)
+			con.save()
+		except:
+			if not request.user.is_authenticated():
+				return HttpResponse(STATUS_INVALID_USER)
+			return HttpResponse(STATUS_INVALID_PARAM)
+		return HttpResponse(STATUS_SUCCESS)
+	else:
+	    form = CreateConfForm()
+	    return render(request, "eventster/conference_form.html", {'form': form, 'user': request.user})
 
 @csrf_exempt
 def CreateUser(request):
@@ -214,6 +229,8 @@ def Rsvp(request):
     rlist = []
     for rs in rsvp.objects.filter(rsvp=conf):
 	rlist.append(rs.user.username)
+    # Return to Android the list of user attending the conference
+    return HttpResponse(json.dumps(rlist));
     t =loader.get_template('eventster/confdetail.html')
     c = Context({
 	'confdetail': conf, 'user': request.user, 'rsvpobjs': rsvpobjs , 'rsvplist': rlist,
@@ -255,17 +272,6 @@ def OutputFormat(request, confall,t,c):
 		return HttpResponse(STATUS_INVALID_USER)
       data = serializers.serialize(GET['output'], (confall if isinstance(confall, Iterable) else [confall]))
       return HttpResponse(data, mimetype='application/' + GET['output'])
-    elif('dev' in GET and GET['dev'] in ('and')):
-	# Need to change the following if conference model is updated.
-	try:
-		con = conference(name=GET['xyz'], Agenda=GET['cba'], genre=GET['nmo'], location=GET['rst'], date= GET['igh'], time=GET['rss'], owner=request.user, private=False if GET['ft']=='False' else True)
-		con.save()
-	except:
-		if not request.user.is_authenticated():
-			return HttpResponse(STATUS_INVALID_USER)
-		return HttpResponse(STATUS_INVALID_PARAM)
-		
-	return HttpResponse(STATUS_SUCCESS)
     else:
       return HttpResponse(t.render(c))
 
