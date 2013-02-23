@@ -47,7 +47,7 @@ def LoginPage(request):
 		pass
 		#Return a 'disabled account' error message
 	    else:
-	      return HttpResponse('Invalid info')
+	      return HttpResponse(STATUS_INVALID_USER)
 	      #Return an 'invalid login' error message.
     else:
 	    username = request.POST['username']
@@ -68,6 +68,8 @@ def LoginPage(request):
 	      #Return an 'invalid login' error message.
 	
   else:
+    # The following should be removed as we dont do csrf check from android app.
+    # Couldnt figure how to add csrf token to the cookie on android side. Hence added csrf_except decorator.
     GET = request.GET
     if('output' in GET ):
 	    tkn = get_token(request)
@@ -94,12 +96,22 @@ def LoginPage(request):
        # use render instead of render_to_response
        return render(request, "eventster/login.html", {'form': form, 'user': request.user})
 
+@csrf_exempt
 def CreateConf(request):
   if request.method == 'POST':
-    POST = request.POST
-    con = conference(name=POST['name'], Agenda=POST['Agenda'], genre=POST['genre'], location=POST['location'], date=POST['date'], time=POST['time'], owner=request.user, private=False if 'private' not in POST else True)
-    con.save()
-    return render(request, 'eventster/success.html', {'user': request.user})
+    if 'android' in request.method:
+	    POST = request.POST
+	    try:
+		    con = conference(name=POST['name'], Agenda=POST['Agenda'], genre=POST['genre'], location=POST['location'], date=POST['date'], time=POST['time'], owner=request.user, private=False if 'private' not in POST else True)
+		    con.save()
+	    except:
+	    	    return HttpResponse(STATUS_INVALID_PARAM)
+	    return HttpResponse(STATUS_SUCCESS)
+    else:	
+	    POST = request.POST
+	    con = conference(name=POST['name'], Agenda=POST['Agenda'], genre=POST['genre'], location=POST['location'], date=POST['date'], time=POST['time'], owner=request.user, private=False if 'private' not in POST else True)
+	    con.save()
+	    return render(request, 'eventster/success.html', {'user': request.user})
   else:
     form = CreateConfForm()
     return render(request, "eventster/conference_form.html", {'form': form, 'user': request.user})
@@ -108,16 +120,26 @@ def CreateConf(request):
 def CreateUser(request):
   if request.method == 'POST':
     # save form, creates user with post variables
-    form = UserForm(request.POST)
-    if form.is_valid():
-      usr = form.save()
-      # mocking what autheticate does
-      usr.backend='django.contrib.auth.backends.ModelBackend' 
-      login(request, usr)
-      if 'forward' in request.session:
-	forward = request.session['forward']
-	return render(request, 'eventster/login_success.html', {'user': request.user, 'forward': forward})
-      return render(request, 'eventster/login_success.html', {'user': request.user})
+	if 'android' in request.method:
+	    form = userform(request.post)
+	    if form.is_valid():
+		usr = form.save();
+	        usr.backend='django.contrib.auth.backends.modelbackend' 
+	        login(request, usr)
+		return HttpResponse(STATUS_SUCCESS)
+	    return HttpResponse(STATUS_INVALID_PARAM)
+		
+	else:    
+	    form = userform(request.post)
+	    if form.is_valid():
+	      usr = form.save()
+	      # mocking what autheticate does
+	      usr.backend='django.contrib.auth.backends.modelbackend' 
+	      login(request, usr)
+	      if 'forward' in request.session:
+		forward = request.session['forward']
+		return render(request, 'eventster/login_success.html', {'user': request.user, 'forward': forward})
+	      return render(request, 'eventster/login_success.html', {'user': request.user})
   else:
     form = UserForm()
 
