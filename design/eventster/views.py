@@ -74,21 +74,6 @@ def LoginPage(request):
     if('output' in GET ):
 	    tkn = get_token(request)
 	    return HttpResponse(json.dumps(tkn))
-     
-   # if('username' in GET and 'password' in GET ):
-   #   lst = []
-   #   user = GET['username']
-   #   paswd = GET['password']
-   #   user = authenticate(username = user , password = paswd)
-   #   if user is not None:
-   #     if user.is_active:
-   #       login(request, user)
-   #       return HttpResponse("You're Logged in.")
-   #     else:
-   #       pass
-   #       #Return a 'disabled account' error message
-   #   else:
-   #     return HttpResponse('Invalid info!')
     else:
        form = UserCreationForm()
        if('forward' in GET):
@@ -227,15 +212,16 @@ def Rsvp(request):
     elif ('event' in GET and GET['event'] in ('attendees')):
 	    rsvpobjs = rsvp.objects.filter(rsvp=conf)
     rlist = []
+    userlist = []
     for rs in rsvp.objects.filter(rsvp=conf):
 	rlist.append(rs.user.username)
+	userlist.append(rs.user)
     # Return to Android the list of user attending the conference
-    return HttpResponse(json.dumps(rlist));
     t =loader.get_template('eventster/confdetail.html')
     c = Context({
 	'confdetail': conf, 'user': request.user, 'rsvpobjs': rsvpobjs , 'rsvplist': rlist,
         })
-    return HttpResponse(t.render(c))
+    return OutputFormat(request, userlist , t, c)
     
 
 # Decide to output Json or HTML based on output variable from httprequest
