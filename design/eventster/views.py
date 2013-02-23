@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 from django.template import loader, Context
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render_to_response, render
 from django import forms , template
@@ -95,6 +95,18 @@ def LoginPage(request):
        		request.session['forward']= GET['forward']
        # use render instead of render_to_response
        return render(request, "eventster/login.html", {'form': form, 'user': request.user})
+
+def LogoutAndroid(request):
+	GET = request.GET
+	if('dev' in GET and GET['dev'] in ('and')):
+		#return current user
+		if request.user.is_active == False:
+			return HttpResponse(STATUS_INVALID_USER)
+		logout(request)
+		return HttpResponse(STATUS_SUCCESS)
+	else:
+		return HttpResponse(STATUS_INVALID_PARAM)
+	
 
 @csrf_exempt
 def CreateConf(request):
