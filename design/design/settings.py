@@ -1,6 +1,9 @@
 # Django settings for design project.
 import os
 
+# new admin panel django-suit
+from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS as TCP
+
 # sessions end when browser closes, default value is False
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
@@ -23,6 +26,39 @@ DATABASES = {
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
     }
+}
+
+# Suit stuff
+TEMPLATE_CONTEXT_PROCESSORS = TCP + (
+    'django.core.context_processors.request',
+)
+# Django Suit configuration example
+# Uncomment and change any of following keys
+SUIT_CONFIG = {
+    # header
+     'ADMIN_NAME': 'Jaideep',
+    # 'HEADER_DATE_FORMAT': 'l, j. F Y',
+    # 'HEADER_TIME_FORMAT': 'H:i',
+
+    # forms
+    # 'SHOW_REQUIRED_ASTERISK': True,  # Default True
+    # 'CONFIRM_UNSAVED_CHANGES': True, # Default True
+
+    # menu
+    'SEARCH_URL': 'admin:auth_user_changelist',
+    'MENU_ICONS': {
+        'sites': 'icon-leaf',
+        'auth': 'icon-lock',
+    },
+    # 'MENU_OPEN_FIRST_CHILD': True, # Default True
+    # 'MENU_EXCLUDE': ('auth.group',),
+    # 'MENU_ORDER': ( # Unlisted apps/models, will also be excluded
+    #     ('sites',),
+    #     ('auth', ('user','group')),
+    # ),
+
+    # misc
+    'LIST_PER_PAGE': 15
 }
 
 # Local time zone for this installation. Choices can be found here:
@@ -116,6 +152,7 @@ TEMPLATE_DIRS = (
 )
 
 INSTALLED_APPS = (
+    'suit',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
