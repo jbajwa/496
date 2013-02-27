@@ -4,15 +4,18 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render_to_response, render
 from django import forms , template
-from eventster.models import conference, rsvp
+from eventster.models import conference, rsvp, fileupload
 from django.contrib.staticfiles.storage import staticfiles_storage
 from django.core import serializers
 from collections import Iterable
 from django.contrib.auth.models import User
 from django.middleware.csrf import get_token
 import json
+from django.utils import simplejson
 from forms import CreateConfForm, UserForm
 from django.views.decorators.csrf import csrf_exempt
+from django.core.files.uploadedfile import UploadedFile
+import logging as log
 
 #ERROR/SUCCESS status codes for andriod
 STATUS_SUCCESS = 121
@@ -109,7 +112,8 @@ def CreateConf(request):
 	    POST = request.POST
 	    con = conference(name=POST['name'], Agenda=POST['Agenda'], genre=POST['genre'], location=POST['location'], date=POST['date'], time=POST['time'], owner=request.user, private=False if 'private' not in POST else True)
 	    con.save()
-	    return render(request, 'eventster/success.html', {'user': request.user})
+	    #return render(request, 'eventster/success.html', {'user': request.user})
+	    return render(request, 'eventster/upload_success.html', {'user': request.user, 'confid':con.id, })
   
   # Populate event using GET protocol
   if request.method == 'GET':
@@ -174,6 +178,7 @@ def ListConf(request):
     
 def ConfDetail(request, conf_id):
     confdetail = conference.objects.get(id=conf_id) 
+    files = fileupload.objects.filter(event=conf_id)
     rsvpobjs = None
     if 'output' in request.GET:
 	    t =loader.get_template('eventster/confdetail.html')
@@ -188,7 +193,7 @@ def ConfDetail(request, conf_id):
 		rlist.append(rs.user.username)
 	    t =loader.get_template('eventster/confdetail.html')
 	    c = Context({
-		'confdetail': confdetail, 'user': request.user, 'rsvpobjs': rsvpobjs , 'rsvplist': rlist,
+		'confdetail': confdetail, 'user': request.user, 'rsvpobjs': rsvpobjs , 'rsvplist': rlist, 'files':files,
 		})
     return HttpResponse(t.render(c))
 
@@ -225,7 +230,64 @@ def Rsvp(request):
 	'confdetail': conf, 'user': request.user, 'rsvpobjs': rsvpobjs , 'rsvplist': rlist,
         })
     return OutputFormat(request, userlist , t, c)
-    
+
+# File upload view
+@csrf_exempt
+def FileDel(request, pk):
+    """
+    View for deleting photos with multiuploader AJAX plugin.
+    made from api on:
+    https://github.com/blueimp/jQuery-File-Upload
+    """
+    if request.method == 'POST':
+        log.info('Called delete file. Photo id='+str(pk))
+        fi = get_object_or_404(fileu, pk=pk)
+        fi.delete()
+        log.info('DONE. Deleted photo id='+str(pk))
+        return HttpResponse(str(pk))
+    else:
+        log.info('Recieved not POST request')
+        return HttpResponseBadRequest('Only POST accepted')
+
+@csrf_exempt
+def FileUploader(request):
+    if request.method == 'POST':
+        log.info('received POST to main multiuploader view')
+        if request.FILES == None:
+            return HttpResponseBadRequest('Must have files attached!')
+
+        #getting file data for farther manipulations
+        file = request.FILES[u'files[]']
+        wrapped_file = UploadedFile(file)
+        filename = wrapped_file.name
+        file_size = wrapped_file.file.size
+        #writing file manually into model
+        #because we don't need form of any type.
+        fi = fileupload(title = str(filename), fileu = file, event = conference.objects.get(id = request.GET['confid']))
+        data = serializers.serialize("json", (fi if isinstance(fi, Iterable) else [fi]))
+        fi.save()
+        log.info('File saving done')
+
+        #getting url for photo deletion
+        file_delete_url = '/delete/'
+        
+        #getting file url here
+        file_url = '/'
+
+        #generating json response array
+        result = []
+        result.append({"name":filename, 
+                       "size":file_size, 
+                       "url":file_url, 
+                       "delete_url":file_delete_url+str(fi.pk)+'/', 
+                       "delete_type":"POST",})
+        response_data = simplejson.dumps(result)
+        #return HttpResponse(response_data, mimetype='application/json')
+	return render(request, 'eventster/success.html', {'user': request.user})
+    else: #GET
+        return render_to_response('eventster/upload_success.html', 
+				{},
+                                  )
 
 # Decide to output Json or HTML based on output variable from httprequest
 def OutputFormat(request, confall,t,c):

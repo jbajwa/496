@@ -25,6 +25,17 @@
   <ul class="lead" style="margin-top: 20px" >Time :<b> {{ confdetail.time }}</b></ul>
   <ul class="lead" style="margin-top: 20px" >Owner name :<b> {{ confdetail.owner.username }}</b></ul>
   <ul class="lead" style="margin-top: 20px" >Private :<b> {{ confdetail.private }}</b></ul>
+
+<!-- List all the files attached with this conference-->
+  <ul class="lead" style="margin-top: 20px" >Additional files attached</ul>
+  {% for file in files %}
+	<ul style="color: #404040">
+	<span style="padding: 5px 10px; background: #ccc; font-size: 12pt; font-weight: bold; color: #000">{{ forloop.counter }}</span>&nbsp;
+	<span class="lead" style="margin-top: 20px" ><a href="{{ file.fileu.url }}">{{ file.title }} </a></span>
+	<br /><br />
+	</ul>
+  {% endfor %}
+     
 	{% if user.is_authenticated %}
 		{% if user == confdetail.owner %}
 			<ul><a class="btn btn-large btn-primary" href="/rsvp/?event=attendees&confid={{confdetail.id}}">List of Attendees</a></ul>

@@ -1,4 +1,6 @@
 from django.conf.urls import patterns, include, url
+from django.conf.urls.static import static
+from django.conf import settings
 from django.views.generic.simple import direct_to_template
 from eventster.models import conference
 from django.contrib.auth.models import User
@@ -6,6 +8,7 @@ from django.contrib.auth.models import User
 from django.contrib import admin
 #generic view
 from django.views.generic import DetailView, CreateView, ListView
+
 admin.autodiscover()
 
 urlpatterns = patterns('',
@@ -25,6 +28,12 @@ urlpatterns = patterns('',
     url(r'^logout_android/', 'eventster.views.LogoutAndroid'),
     url(r'^conf/$', 'eventster.views.ListConf'),
     url(r'^conf/(?P<conf_id>\d+)/', 'eventster.views.ConfDetail'),
+
+    #file upload urls
+
+    url(r'^delete/(\d+)/$', 'eventster.views.FileDel'),
+    url(r'^upload/$', 'eventster.views.FileUploader'),
+
     #url(r'^list_conf/', ListView.as_view(model = conference)),
     # url(r'^design/', include('design.foo.urls')),
 
@@ -33,4 +42,4 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
      url(r'^admin/', include(admin.site.urls)),
-)
+) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

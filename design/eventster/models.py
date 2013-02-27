@@ -23,4 +23,9 @@ class rsvp(models.Model):
     class Meta:
        unique_together = ('user', 'rsvp',)
 
-# Create your models here.
+class fileupload(models.Model):
+    def __unicode__(self):
+      return self.title
+    title = models.CharField(max_length=60)
+    fileu = models.FileField(upload_to = "files/")
+    event = models.ForeignKey(conference)

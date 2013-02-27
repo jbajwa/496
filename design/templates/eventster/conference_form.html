@@ -21,7 +21,7 @@ border: 1px solid #e5e5e5;
 {% if user.is_authenticated %}
 	<form class="form-signin" action="/createconf/" method="post">
 	{% csrf_token %}
-	<h3 class="form-signin-heading">Hi {{user.username}}, create an Event by filling out the form below!</h3>
+	<h3 class="form-signin-heading">Hi {{user.first_name}}, create an Event by filling out the form below!</h3>
         <div class="input">
           <textarea class="xlarge" id="name" name="name" rows="1" placeholder="Event Name"  maxlength=50  ></textarea>
 	</div>
@@ -55,7 +55,7 @@ border: 1px solid #e5e5e5;
 	  </span>
 	</div>
 	<p><label for="private">Private:</label> <input type="checkbox" name="private" id="private" /></p>
-	<button class="btn btn-large btn-primary" type="submit">Create</button>
+	<button class="btn btn-large btn-primary" type="submit">Continue</button>
 	<br>
 	<br>
 	</form>
