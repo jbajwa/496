@@ -103,7 +103,12 @@ def CreateConf(request):
     if 'android' in request.POST:
 	    POST = request.POST
 	    try:
-		    con = conference(name=POST['name'], Agenda=POST['Agenda'], genre=POST['genre'], location=POST['location'], date=POST['date'], time=POST['time'], owner=request.user, private=False if 'private' not in POST else True)
+		    con = conference(name=POST['name'], Agenda=POST['Agenda'],
+				     genre=POST['genre'],
+				     location=POST['location'],
+				     date=POST['date'], time=POST['time'],
+				     owner=request.user,
+				     private=False if 'private' not in POST else True)
 		    con.save()
 	    except:
 	    	    return HttpResponse(STATUS_INVALID_PARAM)
@@ -186,7 +191,7 @@ def ConfDetail(request, conf_id):
 		'confdetail': confdetail, 'user': request.user,
 		})
 	    # in [] as serializers need iterable as parameter
-	    return OutputFormat(request,confdetail,t,c)
+	    return OutputFormat(request,confdetail,t,c,conf_id)
     else:
 	    rlist = []
             for rs in rsvp.objects.filter(rsvp=confdetail):
@@ -264,7 +269,6 @@ def FileUploader(request):
         #writing file manually into model
         #because we don't need form of any type.
         fi = fileupload(title = str(filename), fileu = file, event = conference.objects.get(id = request.GET['confid']))
-        data = serializers.serialize("json", (fi if isinstance(fi, Iterable) else [fi]))
         fi.save()
         log.info('File saving done')
 
@@ -290,7 +294,7 @@ def FileUploader(request):
                                   )
 
 # Decide to output Json or HTML based on output variable from httprequest
-def OutputFormat(request, confall,t,c):
+def OutputFormat(request, confall,t,c,eventid):
     GET = request.GET
     if('output' in GET and GET['output'] in ('json', 'xml')):
       # adding filter to sort by genre and location
@@ -321,6 +325,9 @@ def OutputFormat(request, confall,t,c):
       		confall = conference.objects.filter(owner=request.user)
 	else:
 		return HttpResponse(STATUS_INVALID_USER)
+      elif('query' in GET and GET['query'] in ('file')):
+	# files associated with an event
+	confall = fileupload.objects.filter(event = conference.objects.get(id = eventid))
       data = serializers.serialize(GET['output'], (confall if isinstance(confall, Iterable) else [confall]))
       return HttpResponse(data, mimetype='application/' + GET['output'])
     else:

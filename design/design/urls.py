@@ -30,6 +30,7 @@ urlpatterns = patterns('',
     url(r'^conf/(?P<conf_id>\d+)/', 'eventster.views.ConfDetail'),
 
     #file upload urls
+    # conf/file/...
 
     url(r'^delete/(\d+)/$', 'eventster.views.FileDel'),
     url(r'^upload/$', 'eventster.views.FileUploader'),
