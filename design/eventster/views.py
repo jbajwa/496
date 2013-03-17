@@ -294,7 +294,14 @@ def FileUploader(request):
                                   )
 
 # Decide to output Json or HTML based on output variable from httprequest
-def OutputFormat(request, confall,t,c,eventid):
+#def OutputFormat(request, confall,t,c,eventid):
+def OutputFormat(*args):
+    request = args[0]
+    confall = args[1]
+    t = args[2]
+    c = args[3]
+    if len(args) > 4:
+      eventid = args[4]
     GET = request.GET
     if('output' in GET and GET['output'] in ('json', 'xml')):
       # adding filter to sort by genre and location
