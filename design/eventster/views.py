@@ -257,36 +257,33 @@ def FileDel(request, pk):
 @csrf_exempt
 def FileUploader(request):
     if request.method == 'POST':
-        log.info('received POST to main multiuploader view')
-        if request.FILES == None:
-            return HttpResponseBadRequest('Must have files attached!')
+	if request.FILES :
+		#getting file data for farther manipulations
+		file = request.FILES[u'files[]']
+		wrapped_file = UploadedFile(file)
+		filename = wrapped_file.name
+		file_size = wrapped_file.file.size
+		#writing file manually into model
+		#because we don't need form of any type.
+		fi = fileupload(title = str(filename), fileu = file, event = conference.objects.get(id = request.GET['confid']))
+		fi.save()
+		log.info('File saving done')
 
-        #getting file data for farther manipulations
-        file = request.FILES[u'files[]']
-        wrapped_file = UploadedFile(file)
-        filename = wrapped_file.name
-        file_size = wrapped_file.file.size
-        #writing file manually into model
-        #because we don't need form of any type.
-        fi = fileupload(title = str(filename), fileu = file, event = conference.objects.get(id = request.GET['confid']))
-        fi.save()
-        log.info('File saving done')
+		#getting url for photo deletion
+		file_delete_url = '/delete/'
+		
+		#getting file url here
+		file_url = '/'
 
-        #getting url for photo deletion
-        file_delete_url = '/delete/'
-        
-        #getting file url here
-        file_url = '/'
-
-        #generating json response array
-        result = []
-        result.append({"name":filename, 
-                       "size":file_size, 
-                       "url":file_url, 
-                       "delete_url":file_delete_url+str(fi.pk)+'/', 
-                       "delete_type":"POST",})
-        response_data = simplejson.dumps(result)
-        #return HttpResponse(response_data, mimetype='application/json')
+		#generating json response array
+		result = []
+		result.append({"name":filename, 
+			       "size":file_size, 
+			       "url":file_url, 
+			       "delete_url":file_delete_url+str(fi.pk)+'/', 
+			       "delete_type":"POST",})
+		response_data = simplejson.dumps(result)
+	#return HttpResponse(response_data, mimetype='application/json')
 	return render(request, 'eventster/success.html', {'user': request.user})
     else: #GET
         return render_to_response('eventster/upload_success.html', 

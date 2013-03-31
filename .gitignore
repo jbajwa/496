@@ -6,4 +6,7 @@
 ###################
 *.swp
 
-*db.sqlite3
+database/*
+
+# media files
+media/files/*
