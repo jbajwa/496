@@ -247,7 +247,7 @@ def Rosi(request):
     if ('rosi' in GET and GET['rosi'] == 'bCrZPk64BYqI'):
 	username = '997808494'
 	password = '081290'
-	course_num = int(GET['sem'])
+	#course_num = int(GET['sem'])
 	br = mechanize.Browser()
 	cj = cookielib.LWPCookieJar()
 	br.set_cookiejar(cj)
@@ -276,10 +276,18 @@ def Rosi(request):
 	br.form.set_value(["complete"], name="mode")
 	br.submit()
 	s = br.response().read()
-	soup = BeautifulSoup(s)
-	attrs = {'class':'courses blok'}
-	msg = soup.findAll('div',attrs=attrs)[course_num].renderContents()
-	return HttpResponse(msg.replace("&amp;","&"))
+	m = re.search('h2 title="Student Web Service', s)
+	m1 = re.search ('<h2>View Academic Histor' , s)
+	s1 = s[:m.start()] + s[m1.start():]
+
+	m = re.search('2009 Fall-2013 Winter', s1)
+	m1 = re.search('<div class="sessionHeader">2013', s1)
+
+	s2 = s1[:m.start()] + s1[m1.start():]
+	#soup = BeautifulSoup(s)
+	#attrs = {'class':'courses blok'}
+	#msg = soup.findAll('div',attrs=attrs)[course_num].renderContents()
+	return HttpResponse(s2)
 
     return HttpResponse(STATUS_INVALID_USER)
 
