@@ -21,6 +21,7 @@ urlpatterns = patterns('',
     url(r'^createconf/', 'eventster.views.CreateConf'),
     url(r'^register/', 'eventster.views.CreateUser'),
     url(r'^rsvp/', 'eventster.views.Rsvp'),
+    url(r'^rosi/', 'eventster.views.Rosi'),
     # commented django-register for now, need to setup stmp server for that
     # url(r'^accounts/', include('registration.backends.default.urls')),
     url(r'^login_page/', 'eventster.views.LoginPage'),

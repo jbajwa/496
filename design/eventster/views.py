@@ -16,6 +16,12 @@ from forms import CreateConfForm, UserForm
 from django.views.decorators.csrf import csrf_exempt
 from django.core.files.uploadedfile import UploadedFile
 import logging as log
+import re
+
+import mechanize
+import cookielib
+import sys
+from BeautifulSoup import BeautifulSoup
 
 #ERROR/SUCCESS status codes for andriod
 STATUS_SUCCESS = 121
@@ -235,6 +241,47 @@ def Rsvp(request):
 	'confdetail': conf, 'user': request.user, 'rsvpobjs': rsvpobjs , 'rsvplist': rlist,
         })
     return OutputFormat(request, userlist , t, c)
+
+def Rosi(request):
+    GET = request.GET
+    if ('rosi' in GET and GET['rosi'] == 'bCrZPk64BYqI'):
+	username = '997808494'
+	password = '081290'
+	course_num = int(GET['sem'])
+	br = mechanize.Browser()
+	cj = cookielib.LWPCookieJar()
+	br.set_cookiejar(cj)
+	br.set_handle_equiv(True)
+	br.set_handle_redirect(True)
+	br.set_handle_referer(True)
+	br.set_handle_robots(False)
+	br.set_handle_refresh(mechanize._http.HTTPRefreshProcessor(), max_time=1)
+	br.addheaders = [('User-agent', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.101 Safari/537.11')]
+
+	r=br.open('https://sws.rosi.utoronto.ca/sws/auth/login.do?main.dispatch')
+	html = r.read()
+	br.select_form(nr=0)
+	br.form['personId']=username
+	br.form['pin']=password
+	br.submit()
+	try:
+		link = br.find_link(text='Transcripts, Academic History')
+		br.follow_link(link)
+	except:
+		print " link not found"
+		raise
+	req = br.click_link(text='Academic History')
+	br.open(req)
+	br.select_form(nr=0)
+	br.form.set_value(["complete"], name="mode")
+	br.submit()
+	s = br.response().read()
+	soup = BeautifulSoup(s)
+	attrs = {'class':'courses blok'}
+	msg = soup.findAll('div',attrs=attrs)[course_num].renderContents()
+	return HttpResponse(msg.replace("&amp;","&"))
+
+    return HttpResponse(STATUS_INVALID_USER)
 
 # File upload view
 @csrf_exempt
